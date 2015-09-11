@@ -17,7 +17,7 @@ $sql = "UPDATE Myguests SET score=score+1 WHERE id=$pp";
 
 if ($conn->query($sql) === TRUE) {
 	
-    header("location: aa.php");
+    header("location: home.php");
 
     
 } else {
