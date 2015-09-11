@@ -1,3 +1,11 @@
+<html>
+<head>
+<title>
+Facemash
+</title>
+</head>
+<body>
+	<h1>Welcome To Facemash</h1>
 <?php
 $servername = "localhost";
 $username = "root";
@@ -10,75 +18,62 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
-$tmo=rand(10,21);
-
-$sql = "SELECT * FROM myguests WHERE id=$tmo";
+//$tmo=rand(10,21);
+$sql = "SELECT * FROM myguests ORDER BY rand() LIMIT 2";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     // output data of each row
     while($row = $result->fetch_assoc()) {
     	
-        echo "id: " . $row["id"]. " - Name: " . $row["firstname"]. " " . $row["lastname"]. "<br>";
+        echo "Name: " . $row["firstname"]. " " . $row["lastname"]. "<br>";
+                echo "<form action='up2.php' method='post'><input type='text' value='".$row["id"]."' name='name' hidden><input type='submit' value='Vote Up'></form>";
+
     }
 } else {
-    echo "0 results";
+    echo "Database Error";
 }
-$tmp=rand(10,21);
-$sql = "SELECT * FROM myguests WHERE id=$tmp";
+
+$conn->close();
+?>
+
+<hr>
+
+<h1><b> TOP SCORERS</b><br></h1>
+
+
+
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "mydb";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+} 
+$sql="SELECT * FROM myguests ORDER BY score DESC LIMIT 5 ";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
-    // output data of each row
+    echo"<table style='border:1px solid black;'><tr style='border:1px solid black;'><td style='border:1px solid black;'>Name</td><td style='border:1px solid black;'>Score</td></tr>";
     while($row = $result->fetch_assoc()) {
     	
-        echo "id: " . $row["id"]. " - Name: " . $row["firstname"]. " " . $row["lastname"]. "<br>";
+      	echo "<tr style='border:1px solid black;'>";
+         echo "<td style='border:1px solid black;'>" . $row["firstname"]. " " . $row["lastname"]." </td><td style='border:1px solid black;'>".$row["score"]. "</td><br>";
     }
+    echo"</table>";
 } else {
     echo "0 results";
 }
 
 $conn->close();
 ?>
-<html>
-<body>
-
-<form action="up2.php" method="post">
-id: <input type="text" name="name"><br>
-
-<input type="submit">
-</form>
-<h><bold> top scorer</bold><br></h>
 
 </body>
+
 </html>
 
-
-<?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "mydb";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-} 
-$sql="SELECT * FROM myguests WHERE score=( SELECT max(score) FROM myguests )";
-$result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
-    // output data of each row
-    while($row = $result->fetch_assoc()) {
-    	
-      
-         echo "id: ". $row["id"]. " - Name: " . $row["firstname"]. " " . $row["lastname"]." ".$row["score"]. "<br>";
-    }
-} else {
-    echo "0 results";
-}
-
-$conn->close();
-?>
